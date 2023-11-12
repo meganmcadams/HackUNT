@@ -3,7 +3,7 @@
 <html lang="en"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Weenies</title>
+    <title>No Weenies</title>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='assets/logo.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='assets/logo.png') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
@@ -23,7 +23,7 @@
     <nav class="navbar navbar-light navbar-expand-md bg-c1 py-3 sticky-top">
         <div class="margined container-fluid navbar-left">
             <img class="padded-right" src="{{ url_for('static', filename='assets/logo.png') }}" height="25px" alt="navbar logo">
-            <a class="navbar-brand text-dark ml-2" href="{{ url_for('page_index') }}">Weenies</a>
+            <a class="navbar-brand text-dark ml-2" href="{{ url_for('page_index') }}">No Weenies</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main_nav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -31,10 +31,16 @@
                 <ul class="navbar-nav">
                     <li class="text-center nav-item"> <a class="nav-link text-dark" href="{{ url_for('page_index') }}">Map</a> </li>
                     <li class="text-center nav-item"> <a class="nav-link text-dark" href="{{ url_for('page_classes') }}">Classes</a> </li>
-                    <li class="text-center nav-item"> <a class="nav-link text-dark" href="{{ url_for('page_profs') }}">Professors</a> </li>
                 </ul>
             </div> <!-- navbar collapse -->
         </div> <!-- container-fluid -->
+        {% if show_schedule %}
+            <div class="navbar-right">
+                <button class="btn bg-c4 text-light mr-3" onclick="schedule();">Class Schedule</button>
+                <button class="btn bg-c4 text-light mr-3" onclick="open_alert('settings');">Input Rooms</button>
+                <button class="btn bg-c4 text-light" onclick="open_alert('stairs');">Toggle Stairs</button>
+            </div>
+        {% endif %}
     </nav>
 
     {% block content %}
@@ -44,7 +50,7 @@
 
     <footer class="text-center bg-c3" id="footer">
         <div class="container text-white py-4 py-lg-5">
-            <p class="mb-0 text-light"><strong>Weenies</strong><br></p>
+            <p class="mb-0 text-light"><strong>No Weenies</strong><br></p>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

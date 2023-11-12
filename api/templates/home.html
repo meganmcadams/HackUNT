@@ -1,4 +1,27 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<div class="alert-card" id="settings" style="display: none;">
+    <input type="text" id="start_room" placeholder="From room" class="form-control mb-1">
+    <input type="text" id="end_room" placeholder="To room" class="form-control mb-1">
+    <button type="button" onclick="route();" class="btn bg-c2 m-1">Submit</button>
+    <button type="button" onclick="close_alert('settings');" class="btn bg-c2 m-1">Close</button>
+</div>
+
+<div class="alert-card" id="stairs" style="display: none;">
+    <h6>Toggle Stairs</h6>
+    <input type="radio" id="yes_stairs" name="stairs_toggle" class="form-check-input mb-1" onchange="toggle_stairs();"><label for="yes_stairs">On</label>
+    <br>
+    <input type="radio" id="no_stairs" name="stairs_toggle" class="form-check-input mb-1" onchange="toggle_stairs();"><label for="no_stairs">Off</label>
+    <br>
+    <button type="button" onclick="close_alert('stairs');" class="btn bg-c2 m-1">Close</button>
+</div>
+
+<div class="map-container">
+    <canvas class="map-image canvas-2" width="1632px" height="2112px" id="canvas1"></canvas>
+    <canvas class="map-image canvas-1" width="2304px" height="1720px" id="canvas2"></canvas>
+</div>
+
+<script src="{{url_for('static', filename='scripts/script.js')}}?rndstr=<%= getRandomStr() %"></script>
+
 {% endblock %}

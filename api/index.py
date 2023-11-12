@@ -1,4 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, jsonify, session
+from _utils.Node import Node
+from _utils.search import get_coords
+import json
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -10,7 +13,47 @@ def page(template, kargs = {}): # used to not have to include all of the default
 
 @app.route('/')
 def page_index():
-    return page('home.html')
+    return page('home.html', {"show_schedule": True})
+
+@app.route('/route', methods=["GET"])
+def route():
+    start_room = request.args.get("start_room")
+    end_room = request.args.get("end_room")
+    try:
+        if session['elevator'] == True:
+            paths = get_coords(start_room, end_room, elevators=True)
+        else:
+            paths = get_coords(start_room, end_room, elevators=False)
+    except KeyError:
+        paths = get_coords(start_room, end_room, elevators=False)
+
+    print("PATHS:",len(paths))
+    print(paths)
+
+    print("RESULT:",paths["1"] == paths["2"])
+    return jsonify({"paths": paths})
+
+@app.route('/update_classes', methods=["POST"])
+def update_classes():
+    classes = json.loads(request.get_data().decode('utf-8'))
+    session['classes'] = classes # store in session
+    return {"message": "good"}
+
+@app.route('/update_elevator', methods=["POST"])
+def update_elevator():
+    elevator = str(request.get_data())
+    session['elevator'] = "true" in elevator
+    return {"message": "good"}
+
+@app.route('/load_classes', methods=["GET"])
+def load_classes():
+    print("Loaded", session.get('classes', []))
+    return jsonify({"classes": session.get('classes', [])})
+
+@app.route('/load_elevator', methods=["GET"])
+def load_elevator():
+    print("Loaded elevator:",session.get('elevator', False))
+    return jsonify({"elevator": session.get('elevator', False)})
 
 @app.route('/classes/')
 def page_classes():
