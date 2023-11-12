@@ -19,14 +19,13 @@ def page_index():
 def route():
     start_room = request.args.get("start_room")
     end_room = request.args.get("end_room")
-    bathroom = request.args.get("bathroom",False)
     try:
         if session['elevator'] == True:
-            paths = get_coords(start_room, end_room, elevators=True, bathroom=bathroom)
+            paths = get_coords(start_room, end_room, elevators=True)
         else:
-            paths = get_coords(start_room, end_room, elevators=False, bathroom=bathroom)
+            paths = get_coords(start_room, end_room, elevators=False)
     except KeyError:
-        paths = get_coords(start_room, end_room, elevators=False, bathroom=bathroom)
+        paths = get_coords(start_room, end_room, elevators=False)
 
     print("PATHS:",len(paths))
     print(paths)

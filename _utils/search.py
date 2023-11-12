@@ -1,6 +1,6 @@
 from _utils.Node import Node
 from _utils.nodes import nodes1, nodes2
-from _utils.rooms import floor1, floor2, stairs1, stairs2, stair_from_1_to_2, stair_from_2_to_1, elev_from_1_to_2, elev_from_2_to_1, elevators1, elevators2, malebathrooms1, malebathrooms2, femalebathrooms1, femalebathrooms2
+from _utils.rooms import floor1, floor2, stairs1, stairs2, stair_from_1_to_2, stair_from_2_to_1, elev_from_1_to_2, elev_from_2_to_1, elevators1, elevators2
 
 def search(f, t: Node, start_node: Node, end_node: Node, path: list = [], paths: list = [], nodes: list = []):    
     to_search = t.adjacents
@@ -23,7 +23,7 @@ def search(f, t: Node, start_node: Node, end_node: Node, path: list = [], paths:
             paths = search(t, curr, start_node, end_node, path + [t], paths, nodes)
     return paths
 
-def get_coords(start_room, end_room, elevators = False, bathroom = False):
+def get_coords(start_room, end_room, elevators = False):
     if elevators:
         travel1 = elevators1.copy()
         travel2 = elevators2.copy()
@@ -41,79 +41,15 @@ def get_coords(start_room, end_room, elevators = False, bathroom = False):
     not_floor = "2"
     if start_floor1 == end_floor1: # on same floor            
         if start_floor1:
-            start_node = nodes1[floor1[start_room]]            
-            if bathroom:
-                males = malebathrooms1[start_node.hallway]
-                if not males:
-                    males = malebathrooms1['X']
-                best_male_option = males[0]
-                paths = search(None, start_node, start_node, nodes1[best_male_option], nodes = nodes1)
-                best_male_path = min(paths, key=len)
-                for option in males:
-                    paths = search(None, start_node, start_node, nodes1[best_male_option], nodes = nodes1)
-                    curr_path = min(paths, key=len)
-                    if len(best_male_path) < len(curr_path):
-                        best_male_path = curr_path
-                        best_male_option = option
-
-                females = femalebathrooms1[start_node.hallway]
-                if not females:
-                    females = femalebathrooms1['X']
-                best_male_option = females[0]
-                paths.clear()
-                paths = search(None, start_node, start_node, nodes1[best_female_option], nodes = nodes1)
-                best_female_path = min(paths, key=len)
-                for option in males:
-                    paths = search(None, start_node, start_node, nodes1[best_female_option], nodes = nodes1)
-                    curr_path = min(paths, key=len)
-                    if len(best_female_path) < len(curr_path):
-                        best_female_path = curr_path
-                        best_female_option = option
-
-                return {"1": [n.coords for n in best_male_path], "2": [n.coords for n in best_female_path]}
-                
-            else:
-                end_node = nodes1[floor1[end_room]]
+            start_node = nodes1[floor1[start_room]]
+            end_node = nodes1[floor1[end_room]]
             paths = search(None, start_node, start_node, end_node, nodes = nodes1)
         else:
             start_node = nodes2[floor2[start_room]]
-            if bathroom:
-                males = malebathrooms2[start_node.hallway]
-                if not males:
-                    males = malebathrooms2['X']
-                best_male_option = males[0]
-                paths = search(None, start_node, start_node, nodes2[best_male_option], nodes = nodes2)
-                print("started", start_node.id)
-                print(nodes2[best_male_option].id)
-                best_male_path = min(paths, key=len)
-                for option in males:
-                    paths = search(None, start_node, start_node, nodes2[best_male_option], nodes = nodes2)
-                    curr_path = min(paths, key=len)
-                    if len(best_male_path) < len(curr_path):
-                        best_male_path = curr_path
-                        best_male_option = option
-
-                females = femalebathrooms2[start_node.hallway]
-                if not females:
-                    females = femalebathrooms2['X']
-                best_female_option = females[0]
-                paths.clear()
-                paths = search(None, start_node, start_node, nodes2[best_female_option], nodes = nodes2)
-                best_female_path = min(paths, key=len)
-                for option in males:
-                    paths = search(None, start_node, start_node, nodes2[best_female_option], nodes = nodes2)
-                    curr_path = min(paths, key=len)
-                    if len(best_female_path) < len(curr_path):
-                        best_female_path = curr_path
-                        best_female_option = option
-
-                return {"1": [n.coords for n in best_male_path], "2": [n.coords for n in best_female_path]}
-            else:
-                start_node = nodes2[floor2[start_room]]
-                end_node = nodes2[floor2[end_room]]
-                floor = "2"
-                not_floor = "1"
-                paths = search(None, start_node, start_node, end_node, nodes = nodes2)
+            end_node = nodes2[floor2[end_room]]
+            floor = "2"
+            not_floor = "1"
+            paths = search(None, start_node, start_node, end_node, nodes = nodes2)
         best_path = min(paths, key=len)
         paths.clear()
         print("Best:",[n.id for n in best_path])
@@ -154,6 +90,7 @@ def get_coords(start_room, end_room, elevators = False, bathroom = False):
             paths = search(None, start_node, start_node, nodes2[start_stair[0]], nodes = nodes2)
             best_stair_path = min(paths, key=len)
             for option in start_stair:
+                paths.clear()
                 paths = search(None, start_node, start_node, nodes2[option], nodes = nodes2)
                 curr_path = min(paths, key=len)
                 if len(curr_path) < len(best_stair_path):

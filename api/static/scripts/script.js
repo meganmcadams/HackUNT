@@ -8,14 +8,14 @@ function update_elevator(elevator = false) {
         });
 }
 
-function route(start_room = null, end_room = null, bathroom = false) {
+function route(start_room = null, end_room = null) {
     clearScreen();
     if (start_room == null) {
         var start_room = document.getElementById("start_room").value;
         var end_room = document.getElementById('end_room').value;
     }
 
-    fetch(`/route?start_room=${start_room}&end_room=${end_room}&bathroom=${bathroom}`)
+    fetch(`/route?start_room=${start_room}&end_room=${end_room}`)
         .then(response => response.json())
         .then(data => {
             if (data.paths == null) {
@@ -26,88 +26,31 @@ function route(start_room = null, end_room = null, bathroom = false) {
             console.log(data.paths);
             let paths = data.paths;
             for (let i = 1; i <= 2; i++) {
-                if (bathroom) {
-                    index = "1";
-                    for (let j = 1; j < paths[index].length; j++) {
-                        console.log("Drawing a line");
-                        drawLine(start_room[1], paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
+                index = String(i)
+                for (let j = 1; j < paths[index].length; j++) {
+                    console.log("Drawing a line");
+                    drawLine(index, paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
+                }
 
-                        if (paths[index].length > 0) {
-                            console.log("Drawing circles");
+                if (paths[index].length > 0) {
+                
+
+                    console.log("Drawing circles");
+
+                    let can = document.getElementById('canvas' + index);
+                    let ctx = can.getContext('2d');
         
-                            let can = document.getElementById('canvas' + start_room[1]);
-                            let ctx = can.getContext('2d');
-                
-                            ctx.beginPath();
-                            ctx.strokeStyle = "#e63a3a";
-                            ctx.lineWidth = 9;
-                            console.log(paths[index]);
-                            ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
-                            ctx.stroke();
-                
-                            ctx.beginPath();
-                            ctx.strokeStyle = "#7eb5e8";
-                            ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
-                            ctx.stroke(); 
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#e63a3a";
+                    ctx.lineWidth = 9;
+                    console.log(paths[index]);
+                    ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
+                    ctx.stroke();
         
-                        }
-                    }
-                    index = "2";
-                    for (let j = 1; j < paths[index].length; j++) {
-                        console.log("Drawing a line");
-                        drawLine(start_room[1], paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
-
-                        if (paths[index].length > 0) {
-                
-
-                            console.log("Drawing circles");
-        
-                            let can = document.getElementById('canvas' + start_room[1]);
-                            let ctx = can.getContext('2d');
-                
-                            ctx.beginPath();
-                            ctx.strokeStyle = "#e63a3a";
-                            ctx.lineWidth = 9;
-                            console.log(paths[index]);
-                            ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
-                            ctx.stroke();
-                
-                            ctx.beginPath();
-                            ctx.strokeStyle = "#7eb5e8";
-                            ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
-                            ctx.stroke(); 
-        
-                        }
-                    }
-                } else {
-                    index = String(i);
-                    
-                    for (let j = 1; j < paths[index].length; j++) {
-                        console.log("Drawing a line");
-                        drawLine(index, paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
-                    }
-
-                    if (paths[index].length > 0) {
-                
-
-                        console.log("Drawing circles");
-    
-                        let can = document.getElementById('canvas' + index);
-                        let ctx = can.getContext('2d');
-            
-                        ctx.beginPath();
-                        ctx.strokeStyle = "#e63a3a";
-                        ctx.lineWidth = 9;
-                        console.log(paths[index]);
-                        ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
-                        ctx.stroke();
-            
-                        ctx.beginPath();
-                        ctx.strokeStyle = "#7eb5e8";
-                        ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
-                        ctx.stroke(); 
-    
-                    }
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#7eb5e8";
+                    ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
+                    ctx.stroke(); 
 
                 }
 
@@ -146,12 +89,6 @@ function schedule() {
         route(classes[i]['location'], classes[i + 1]['location']);
         console.log("Routed for",classes[i]['location'],"to",classes[i + 1]['location']);
     }
-}
-
-function bathroom() {
-    console.log("Bathrooming");
-    clearScreen();
-    route(document.getElementById('start_room_bathroom').value, null, bathroom=true);
 }
 
 function drawLine(index, x, y, stopX, stopY) {
