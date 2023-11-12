@@ -8,13 +8,14 @@ function update_elevator(elevator = false) {
         });
 }
 
-function route(start_room = null, end_room = null) {
+function route(start_room = null, end_room = null, bathroom = false) {
+    clearScreen();
     if (start_room == null) {
         var start_room = document.getElementById("start_room").value;
         var end_room = document.getElementById('end_room').value;
     }
 
-    fetch(`/route?start_room=${start_room}&end_room=${end_room}`)
+    fetch(`/route?start_room=${start_room}&end_room=${end_room}&bathroom=${bathroom}`)
         .then(response => response.json())
         .then(data => {
             if (data.paths == null) {
@@ -25,31 +26,88 @@ function route(start_room = null, end_room = null) {
             console.log(data.paths);
             let paths = data.paths;
             for (let i = 1; i <= 2; i++) {
-                index = String(i)
-                for (let j = 1; j < paths[index].length; j++) {
-                    console.log("Drawing a line");
-                    drawLine(index, paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
-                }
+                if (bathroom) {
+                    index = "1";
+                    for (let j = 1; j < paths[index].length; j++) {
+                        console.log("Drawing a line");
+                        drawLine(start_room[1], paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
 
-                if (paths[index].length > 0) {
+                        if (paths[index].length > 0) {
+                            console.log("Drawing circles");
+        
+                            let can = document.getElementById('canvas' + start_room[1]);
+                            let ctx = can.getContext('2d');
+                
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#e63a3a";
+                            ctx.lineWidth = 9;
+                            console.log(paths[index]);
+                            ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
+                            ctx.stroke();
+                
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#7eb5e8";
+                            ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
+                            ctx.stroke(); 
+        
+                        }
+                    }
+                    index = "2";
+                    for (let j = 1; j < paths[index].length; j++) {
+                        console.log("Drawing a line");
+                        drawLine(start_room[1], paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
+
+                        if (paths[index].length > 0) {
                 
 
-                    console.log("Drawing circles");
+                            console.log("Drawing circles");
+        
+                            let can = document.getElementById('canvas' + start_room[1]);
+                            let ctx = can.getContext('2d');
+                
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#e63a3a";
+                            ctx.lineWidth = 9;
+                            console.log(paths[index]);
+                            ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
+                            ctx.stroke();
+                
+                            ctx.beginPath();
+                            ctx.strokeStyle = "#7eb5e8";
+                            ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
+                            ctx.stroke(); 
+        
+                        }
+                    }
+                } else {
+                    index = String(i);
+                    
+                    for (let j = 1; j < paths[index].length; j++) {
+                        console.log("Drawing a line");
+                        drawLine(index, paths[index][j - 1][0], paths[index][j - 1][1], paths[index][j][0], paths[index][j][1]);
+                    }
 
-                    let can = document.getElementById('canvas' + index);
-                    let ctx = can.getContext('2d');
-        
-                    ctx.beginPath();
-                    ctx.strokeStyle = "#e63a3a";
-                    ctx.lineWidth = 9;
-                    console.log(paths[index]);
-                    ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
-                    ctx.stroke();
-        
-                    ctx.beginPath();
-                    ctx.strokeStyle = "#7eb5e8";
-                    ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
-                    ctx.stroke(); 
+                    if (paths[index].length > 0) {
+                
+
+                        console.log("Drawing circles");
+    
+                        let can = document.getElementById('canvas' + index);
+                        let ctx = can.getContext('2d');
+            
+                        ctx.beginPath();
+                        ctx.strokeStyle = "#e63a3a";
+                        ctx.lineWidth = 9;
+                        console.log(paths[index]);
+                        ctx.arc(paths[index][0][0], paths[index][0][1], 4, 0, 2 * Math.PI);
+                        ctx.stroke();
+            
+                        ctx.beginPath();
+                        ctx.strokeStyle = "#7eb5e8";
+                        ctx.arc(paths[index][paths[i].length-1][0], paths[index][paths[i].length-1][1], 4, 0, 2 * Math.PI);
+                        ctx.stroke(); 
+    
+                    }
 
                 }
 
@@ -72,15 +130,28 @@ function open_alert(id) {
     element.style.display = "";
 }
 
+function clearScreen() {
+    let can1 = document.getElementById('canvas1');
+    let ctx1 = can1.getContext('2d');
+    ctx1.clearRect (0, 0, can1.width, can1.height);
+    let can2 = document.getElementById('canvas2');
+    let ctx2 = can2.getContext('2d');
+    ctx2.clearRect (0, 0, can2.width, can2.height);
+}
+
 function schedule() {
     console.log("Scheduling");
-    let can = document.getElementById('canvas');
-    let ctx = can.getContext('2d');
-    ctx.clearRect (0, 0, can.width, can.height);
+    clearScreen();
     for (let i = 0; i < classes.length - 1; i++) {
         route(classes[i]['location'], classes[i + 1]['location']);
         console.log("Routed for",classes[i]['location'],"to",classes[i + 1]['location']);
     }
+}
+
+function bathroom() {
+    console.log("Bathrooming");
+    clearScreen();
+    route(document.getElementById('start_room_bathroom').value, null, bathroom=true);
 }
 
 function drawLine(index, x, y, stopX, stopY) {

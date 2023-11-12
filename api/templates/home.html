@@ -8,6 +8,12 @@
     <button type="button" onclick="close_alert('settings');" class="btn bg-c2 m-1">Close</button>
 </div>
 
+<div class="alert-card" id="bathroom" style="display: none;">
+    <input type="text" id="start_room_bathroom" placeholder="From room" class="form-control mb-1">
+    <button type="button" onclick="bathroom(this.previousElementSibling.value);" class="btn bg-c2 m-1">Submit</button>
+    <button type="button" onclick="close_alert('bathroom');" class="btn bg-c2 m-1">Close</button>
+</div>
+
 <div class="alert-card" id="stairs" style="display: none;">
     <h6>Toggle Stairs</h6>
     <input type="radio" id="yes_stairs" name="stairs_toggle" class="form-check-input mb-1" onchange="toggle_stairs();"><label for="yes_stairs">On</label>
